@@ -4,7 +4,7 @@ import edu.upc.epsevg.prop.amazons.players.HumanPlayer;
 import edu.upc.epsevg.prop.amazons.players.CarlinhosPlayer;
 import edu.upc.epsevg.prop.amazons.players.RandomPlayer;
 import javax.swing.SwingUtilities;
-
+//
 /**
  *
  * @author bernat
