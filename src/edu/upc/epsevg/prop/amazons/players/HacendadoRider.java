@@ -33,15 +33,75 @@ public class HacendadoRider implements IPlayer, IAuto {
         // Nothing to do! I'm so fast, I never timeout 8-)
     }
 
-    private Move minimax (GameStatus s, int depth, CellType player){
+        private int max(GameStatus s, int depth, CellType player) {
         Point queenTo = null;
         Point queenFrom = null;
         Point arrowTo = null;
-        
-        return new Move(queenFrom, queenTo, arrowTo, 0, 0, SearchType.MINIMAX);
+        Integer valor = Integer.MIN_VALUE;
+
+        if (depth == 0 || s.isGameOver()) {
+            Random rand = new Random();
+            valor = rand.nextInt(500);
+        } else {
+            int qn = s.getNumberOfAmazonsForEachColor();
+            ArrayList<Point> pendingAmazons = new ArrayList<>();
+            for (int q = 0; q < qn; q++) {
+                pendingAmazons.add(s.getAmazon(player, q));
+            }
+
+            for (int i = 0; i < pendingAmazons.size(); i++) {
+                ArrayList<Point> possibleMove = new ArrayList<>();
+                possibleMove = s.getAmazonMoves(pendingAmazons.get(i), false);
+                for (int j = 0; j < possibleMove.size(); j++) {
+                    GameStatus backUp = new GameStatus(s);
+                    Point actual = new Point(possibleMove.get(j));
+                    backUp.moveAmazon(pendingAmazons.get(i), actual);
+                    //moure fletxa
+                    arrowTo = posicioRandom(backUp);
+                    int value = min(backUp, depth - 1, player);
+                    ///for (int k = 0; k > 0; k++){}
+                    valor = Math.max(value, valor);
+                }
+            }
+        }
+        return valor;
     }
     
     
+    private int min(GameStatus s, int depth, CellType player) {
+        Point queenTo = null;
+        Point queenFrom = null;
+        Point arrowTo = null;
+        Integer valor = Integer.MAX_VALUE;
+
+        if (depth == 0 || s.isGameOver()) {
+            Random rand = new Random();
+            valor = rand.nextInt(500);
+        } else {
+            int qn = s.getNumberOfAmazonsForEachColor();
+            ArrayList<Point> pendingAmazons = new ArrayList<>();
+            for (int q = 0; q < qn; q++) {
+                pendingAmazons.add(s.getAmazon(player, q));
+            }
+
+            for (int i = 0; i < pendingAmazons.size(); i++) {
+                ArrayList<Point> possibleMove = new ArrayList<>();
+                possibleMove = s.getAmazonMoves(pendingAmazons.get(i), false);
+                for (int j = 0; j < possibleMove.size(); j++) {
+                    GameStatus backUp = new GameStatus(s);
+                    Point actual = new Point(possibleMove.get(j));
+                    backUp.moveAmazon(pendingAmazons.get(i), actual);
+                    //moure fletxa
+                    arrowTo = posicioRandom(backUp);
+                    int value = max(backUp, depth - 1, player);
+                    ///for (int k = 0; k > 0; k++){}
+                    valor = Math.min(value, valor);
+                }
+            }
+        }
+        return valor;
+    }
+
     /**
      * Decideix el moviment del jugador donat un tauler i un color de peça que
      * ha de posar.
@@ -56,37 +116,42 @@ public class HacendadoRider implements IPlayer, IAuto {
         Point arrowTo = null;
         CellType player = s.getCurrentPlayer();
         this.s = s;
-        int depth = 0;
-        
+        int depth = 2;
+        int valor = -9999;
+        Move millor = null;
         int qn = s.getNumberOfAmazonsForEachColor();
         ArrayList<Point> pendingAmazons = new ArrayList<>();
         for (int q = 0; q < qn; q++) {
             pendingAmazons.add(s.getAmazon(player, q));
         }
-        
-        for (int i =0; i< pendingAmazons.size(); i++){
+
+        for (int i = 0; i < pendingAmazons.size(); i++) {
             ArrayList<Point> possibleMove = new ArrayList<>();
             possibleMove = s.getAmazonMoves(pendingAmazons.get(i), false);
-            for (int j = 0; j < possibleMove.size(); j++){
+            for (int j = 0; j < possibleMove.size(); j++) {
                 GameStatus backUp = new GameStatus(s);
                 Point actual = new Point(possibleMove.get(j));
                 backUp.moveAmazon(pendingAmazons.get(i), actual);
                 //moure fletxa
                 arrowTo = posicioRandom(backUp);
-                minimax(backUp, depth-1, player.opposite(player));
+                int value = min(backUp, depth - 1, player);
+                if (value > valor){
+                    valor = value;
+                    millor = new Move(pendingAmazons.get(i), possibleMove.get(j), arrowTo, 0, 0, SearchType.MINIMAX);
+                }
                 ///for (int k = 0; k > 0; k++){}
             }
         }
-        queenFrom = pendingAmazons.get(3);
+       /* queenFrom = pendingAmazons.get(3);
         ArrayList<Point> possibleMove = new ArrayList<>();
         possibleMove = s.getAmazonMoves(pendingAmazons.get(3), false);
         queenTo = possibleMove.get(1);
-        arrowTo = posicioRandom(s);
-        
-        
+        arrowTo = posicioRandom(s);*/
+
         //minimax(s, depth, player);
-        return new Move(queenFrom, queenTo, arrowTo, 0, 0, SearchType.MINIMAX);
+        return millor;
     }
+
     /*public Move move(GameStatus s) {
         this.s= s;
         CellType color = s.getCurrentPlayer();
