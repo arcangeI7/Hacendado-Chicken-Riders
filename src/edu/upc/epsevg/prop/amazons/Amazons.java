@@ -2,7 +2,7 @@ package edu.upc.epsevg.prop.amazons;
 
 import edu.upc.epsevg.prop.amazons.players.HumanPlayer;
 import edu.upc.epsevg.prop.amazons.players.CarlinhosPlayer;
-import edu.upc.epsevg.prop.amazons.players.RandomPlayer;
+import edu.upc.epsevg.prop.amazons.players.*;
 import java.io.BufferedInputStream;
 import javax.sound.sampled.AudioInputStream;
 import javax.sound.sampled.AudioSystem;
@@ -14,19 +14,24 @@ import javax.swing.SwingUtilities;
  * @author bernat
  */
 public class Amazons {
-        /**
+   /**
      * @param args
      */
     public static void main(String[] args) {
-        
-        
+
+
         SwingUtilities.invokeLater(new Runnable() {
             @Override
             public void run() {
-                
-                IPlayer player1 = new HumanPlayer("Snail");
-                IPlayer player2 = new CarlinhosPlayer();
-                
+
+                //IPlayer player1 = new HumanPlayer("Oferta");
+                IPlayer player1 = new HacendadoRider("Chicken-Rider");
+                IPlayer player2 = new RandomPlayer("Chicken-Rider");
+                //IPlayer player2 = new CarlinhosPlayer();
+
+                //IPlayer player2 = new Hacendado_Rider("Chicken-Rider");
+                //IPlayer player1 = new CarlinhosPlayer();
+
                 new AmazonsBoard(player1 , player2, 10, Level.HALF_BOARD);
                 try {
                     //BufferedInputStream bis = new BufferedInputStream(getClass().getResourceAsStream("/resources/theEdgeOfDawn.wav"));
@@ -39,7 +44,7 @@ public class Amazons {
                     sonido.open(ais);//Abrimos
 
                     // Comienza la reproducción
-                    sonido.start();//Iniciamos
+                    //sonido.start();//Iniciamos
 
                     // Espera mientras se esté reproduciendo.
                     //
@@ -48,7 +53,7 @@ public class Amazons {
                     }*/
 
                     // Se cierra el clip.
-                   // sonido.close();
+                    sonido.close();
                 } catch (Exception e) {
                     System.out.println("" + e);
                 }

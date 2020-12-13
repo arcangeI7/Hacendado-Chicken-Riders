@@ -1,5 +1,6 @@
 package edu.upc.epsevg.prop.amazons;
 
+import com.sun.tools.javac.Main;
 import java.awt.Color;
 import java.awt.Image;
 import java.awt.event.ActionEvent;
@@ -9,8 +10,21 @@ import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.imageio.ImageIO;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.InputStream;
+import javax.sound.sampled.AudioFormat;
+import javax.sound.sampled.AudioInputStream;
+import javax.sound.sampled.AudioSystem;
+import javax.sound.sampled.Clip;
+import javax.sound.sampled.DataLine;
+import javax.sound.sampled.LineEvent;
+import javax.sound.sampled.LineListener;
+import javax.sound.sampled.LineUnavailableException;
+import javax.sound.sampled.UnsupportedAudioFileException;
 import javax.swing.ImageIcon;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 
 /*
  * To change this license header, choose License Headers in Project Properties.
@@ -48,17 +62,19 @@ public class JControlsPanel extends javax.swing.JPanel implements ActionListener
     }
     
     public void setPlayer1Name(String name) {
-        if (name.length() > 10) {
+        /*if (name.length() > 10) {
             name = name.substring(0, 10) + 1;
-        }
-        lblPlayer1.setText("Player 1: " + name);
+        }*/
+//        lblPlayer1.setText("Player 1: " + name);
+        lblPlayer1.setText("Mercadona Player: " + name);
     }
 
     public void setPlayer2Name(String name) {
         if (name.length() > 10) {
             name = name.substring(0, 10) + 1;
         }
-        lblPlayer2.setText("Player 2: " + name);
+//        lblPlayer2.setText("Player 2: " + name);
+        lblPlayer2.setText("Pollo Totaina Player: " + name);
     }
 
     public void setThinking(boolean thinking) {
@@ -208,7 +224,23 @@ public class JControlsPanel extends javax.swing.JPanel implements ActionListener
         );
     }// </editor-fold>//GEN-END:initComponents
 
-
+    public class AudioPlayerExample1 implements LineListener {
+     
+    /**
+     * this flag indicates whether the playback completes or not.
+     */
+    boolean playCompleted;
+     
+    /**
+     * Play a given audio file.
+     * @param audioFilePath Path of the audio file.
+     */
+   @Override
+        public void update(LineEvent event) {
+            throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        }
+    }
+    
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnStart;
     private javax.swing.JLabel jLabel1;
