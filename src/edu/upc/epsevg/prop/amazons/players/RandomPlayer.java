@@ -41,30 +41,31 @@ public class RandomPlayer implements IPlayer, IAuto {
         this.s = s;
         int qn = s.getNumberOfAmazonsForEachColor();
         ArrayList<Point> pendingAmazons = new ArrayList<>();
-        for (int q = 0; q < qn; q++) {
-            pendingAmazons.add(s.getAmazon(color, q));
+        for (int q = 0; q < qn; q++) {//0,1,2,3
+            pendingAmazons.add(s.getAmazon(color, q));//torna la posició de cadascún dels players(del seu color)
         }
         // Iterem aleatòriament per les reines fins que trobem una que es pot moure.
         Point queenTo = null;
         Point queenFrom = null;
         while (queenTo == null) {
             Random rand = new Random();
-            int q = rand.nextInt(pendingAmazons.size());
-            queenFrom = pendingAmazons.remove(q);
-            queenTo = posicioRandomAmazon(queenFrom);
+            int q = rand.nextInt(pendingAmazons.size());//escull un del jugadors a l'atzar
+            queenFrom = pendingAmazons.remove(q);//peça en lloc inicial -random
+            queenTo = posicioRandomAmazon(queenFrom);//peça en lloc final -random
         }
 
-        // "s" és una còpia del tauler, per es pot manipular sense perill
-        s.moveAmazon(queenFrom, queenTo);
+        // "s" és una còpia del tauler, és pot manipular sense perill
+        s.moveAmazon(queenFrom, queenTo);//moviment
 
-        Point arrowTo = posicioRandom(s);
-
+        Point arrowTo = posicioRandom(s);//pos arrow - random
+        
         return new Move(queenFrom, queenTo, arrowTo, 0, 0, SearchType.RANDOM);
     }
 
     /**
      * Ens avisa que hem de parar la cerca en curs perquè s'ha exhaurit el temps
      * de joc.
+     * @return El nom del jugador
      */
     @Override
     public String getName() {

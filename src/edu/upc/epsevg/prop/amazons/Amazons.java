@@ -26,8 +26,8 @@ public class Amazons {
 
                 //IPlayer player1 = new HumanPlayer("Oferta");
                 IPlayer player1 = new HacendadoRider("Chicken-Rider");
-                IPlayer player2 = new RandomPlayer("Chicken-Rider");
-                //IPlayer player2 = new CarlinhosPlayer();
+                //IPlayer player2 = new RandomPlayer("Chicken-Rider");
+                IPlayer player2 = new CarlinhosPlayer();
 
                 //IPlayer player2 = new Hacendado_Rider("Chicken-Rider");
                 //IPlayer player1 = new CarlinhosPlayer();

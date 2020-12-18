@@ -10,7 +10,11 @@ import edu.upc.epsevg.prop.amazons.GameStatus;
 import edu.upc.epsevg.prop.amazons.IPlayer;
 import edu.upc.epsevg.prop.amazons.Move;
 import java.awt.Point;
+import java.io.BufferedInputStream;
 import java.util.Random;
+import javax.sound.sampled.AudioInputStream;
+import javax.sound.sampled.AudioSystem;
+import javax.sound.sampled.Clip;
 
 /**
  *
@@ -22,6 +26,7 @@ public class HumanPlayer implements IPlayer {
 
     public HumanPlayer(String name) {
         this.name = name;
+        
     }
 
     /**
@@ -33,6 +38,7 @@ public class HumanPlayer implements IPlayer {
      */
     @Override
     public Move move(GameStatus s) {
+       
         return null;
     }
 
