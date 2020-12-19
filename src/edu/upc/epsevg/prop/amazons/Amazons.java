@@ -42,7 +42,13 @@ public class Amazons {
 
                     // Se carga con un fichero wav
                     sonido.open(ais);//Abrimos
-
+                    
+                    //JavaFX 
+                    /*String ssound = "sound.mp3";
+       Media sound = new Media(ssound);
+       MediaPlayer mediaPlayer = new MediaPlayer(sound);
+       mediaPlayer.play();*/
+                    
                     // Comienza la reproducción
                     //sonido.start();//Iniciamos
 
