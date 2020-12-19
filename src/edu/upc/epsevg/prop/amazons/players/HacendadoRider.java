@@ -239,7 +239,7 @@ public class HacendadoRider implements IPlayer, IAuto {
                 movesAmazon = possibleMove.size();
             }
         }
-
+ 
         //puteada de la bestAmazon
         int cont = 0;//contador d'espais buits a la dreta
 
