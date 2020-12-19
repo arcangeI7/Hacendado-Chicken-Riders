@@ -36,7 +36,7 @@ public class HacendadoRider implements IPlayer, IAuto {
         haAcabat = true;
     }
 
-    private int max(GameStatus s, int depth, CellType player) {
+    private int max(GameStatus s, int alpha, int beta, int depth, CellType player) {
         Point queenTo = null;
         Point queenFrom = null;
         Point arrowTo = null;
@@ -57,22 +57,30 @@ public class HacendadoRider implements IPlayer, IAuto {
                 ArrayList<Point> possibleMove = new ArrayList<>();
                 possibleMove = s.getAmazonMoves(pendingAmazons.get(i), false);
                 for (int j = 0; j < possibleMove.size(); j++) {
+                    //Moviment Amazona
                     GameStatus backUp = new GameStatus(s);
                     Point actual = new Point(possibleMove.get(j));
                     backUp.moveAmazon(pendingAmazons.get(i), actual);
-                    //moure fletxa
-                    //arrowTo = posicioRandom(backUp);
+
+                    //Moviment Fletxa
                     arrowTo = fletxa(backUp);
-                    int value = min(backUp, depth - 1, player);
-                    ///for (int k = 0; k > 0; k++){}
-                    valor = Math.max(value, valor);
+                    int value = min(backUp, alpha, beta, depth - 1, player);
+
+                    //Crida Minimitzadora
+                    valor = Math.max(valor, value);
+
+                    //Poda Alpha-Beta
+                    alpha = Math.max(valor, alpha);
+                    if (beta <= alpha) {
+                        return valor;
+                    }
                 }
             }
         }
         return valor;
     }
 
-    private int min(GameStatus s, int depth, CellType player) {
+    private int min(GameStatus s, int alpha, int beta, int depth, CellType player) {
         Point queenTo = null;
         Point queenFrom = null;
         Point arrowTo = null;
@@ -93,15 +101,24 @@ public class HacendadoRider implements IPlayer, IAuto {
                 ArrayList<Point> possibleMove = new ArrayList<>();
                 possibleMove = s.getAmazonMoves(pendingAmazons.get(i), false);
                 for (int j = 0; j < possibleMove.size(); j++) {
+                    //Moviment Amazona
                     GameStatus backUp = new GameStatus(s);
                     Point actual = new Point(possibleMove.get(j));
                     backUp.moveAmazon(pendingAmazons.get(i), actual);
-                    //moure fletxa
-                    //arrowTo = posicioRandom(backUp);
+
+                    //Moviment Fletxa
                     arrowTo = fletxa(backUp);
-                    int value = max(backUp, depth - 1, player);
-                    ///for (int k = 0; k > 0; k++){}
-                    valor = Math.min(value, valor);
+                    int value = max(backUp, alpha, beta, depth - 1, player);
+
+                    //Crida Maximimitzadora
+                    valor = Math.min(valor, value);
+
+                    //Poda Alpha-Beta
+                    beta = Math.min(valor, beta);
+                    if (beta <= alpha) {
+                        return valor;
+                    }
+
                 }
             }
         }
@@ -120,11 +137,17 @@ public class HacendadoRider implements IPlayer, IAuto {
         Point queenTo = null;
         Point queenFrom = null;
         Point arrowTo = null;
-        CellType player = s.getCurrentPlayer();
+
         this.s = s;
-        int depth = 2;
-        int valor = -9999;
+        /* coses a tocar*/
+        int depth = 4;
+        int valor = Integer.MIN_VALUE;
+        int alpha = 0;        //alpha per la poda alpha-beta
+        int beta = 0;         //beta per la poda alpha-beta
         Move millor = null;
+        //////////////////////////
+
+        CellType player = s.getCurrentPlayer();
         int qn = s.getNumberOfAmazonsForEachColor();
         ArrayList<Point> pendingAmazons = new ArrayList<>();
         for (int q = 0; q < qn; q++) {
@@ -141,13 +164,17 @@ public class HacendadoRider implements IPlayer, IAuto {
                 //moure fletxa
                 //arrowTo = posicioRandom(backUp);
                 arrowTo = fletxa(backUp);
-                int value = min(backUp, depth - 1, player);
+
+                //crida al MiniMax
+                int value = min(backUp, alpha, beta, depth - 1, player);
+
                 if (value > valor) {
                     valor = value;
                     millor = new Move(pendingAmazons.get(i), possibleMove.get(j), arrowTo, 0, 0, SearchType.MINIMAX);
                 }
-                ///for (int k = 0; k > 0; k++){}
+
             }
+
         }
         return millor;
     }
@@ -239,7 +266,7 @@ public class HacendadoRider implements IPlayer, IAuto {
                 movesAmazon = possibleMove.size();
             }
         }
- 
+
         //puteada de la bestAmazon
         int cont = 0;//contador d'espais buits a la dreta
 
@@ -247,7 +274,7 @@ public class HacendadoRider implements IPlayer, IAuto {
         double y = bestAmazon.getY();
         boolean trobat = false;
         while (!trobat && x < s.getSize()) {//paret lateral dreta
-            if (s.getPos((int)(x), (int)(y)) == CellType.EMPTY) {
+            if (s.getPos((int) (x), (int) (y)) == CellType.EMPTY) {
                 cont++;
             } else {
                 trobat = true;
@@ -260,7 +287,7 @@ public class HacendadoRider implements IPlayer, IAuto {
         x = bestAmazon.getX() - 1;
         trobat = false;
         while (!trobat && x > -1) {//paret lateral esquerra
-            if (s.getPos((int)(x), (int)(y)) == CellType.EMPTY) {
+            if (s.getPos((int) (x), (int) (y)) == CellType.EMPTY) {
                 cont++;
             } else {
                 trobat = true;
@@ -275,7 +302,7 @@ public class HacendadoRider implements IPlayer, IAuto {
         y = bestAmazon.getY() + 1;
         trobat = false;
         while (!trobat && y < s.getSize()) {//paret lateral superior
-            if (s.getPos((int)(x), (int)(y)) == CellType.EMPTY) {
+            if (s.getPos((int) (x), (int) (y)) == CellType.EMPTY) {
                 cont++;
             } else {
                 trobat = true;
@@ -289,7 +316,7 @@ public class HacendadoRider implements IPlayer, IAuto {
         y = bestAmazon.getY() - 1;
         trobat = false;
         while (!trobat && y > -1) {//paret lateral inferior
-            if (s.getPos((int)(x), (int)(y)) == CellType.EMPTY) {
+            if (s.getPos((int) (x), (int) (y)) == CellType.EMPTY) {
                 cont++;
             } else {
                 trobat = true;
@@ -304,7 +331,7 @@ public class HacendadoRider implements IPlayer, IAuto {
         y = bestAmazon.getY() + 1;
         trobat = false;
         while (!trobat && y < s.getSize() && x < s.getSize()) {//parets laterals superior-dreta
-            if (s.getPos((int)(x), (int)(y)) == CellType.EMPTY) {
+            if (s.getPos((int) (x), (int) (y)) == CellType.EMPTY) {
                 cont++;
             } else {
                 trobat = true;
@@ -320,7 +347,7 @@ public class HacendadoRider implements IPlayer, IAuto {
         y = bestAmazon.getY() - 1;
         trobat = false;
         while (!trobat && y > -1 && x > -1) {//paret laterals inferior-esquerra
-            if (s.getPos((int)(x), (int)(y)) == CellType.EMPTY) {
+            if (s.getPos((int) (x), (int) (y)) == CellType.EMPTY) {
                 cont++;
             } else {
                 trobat = true;
@@ -336,7 +363,7 @@ public class HacendadoRider implements IPlayer, IAuto {
         y = bestAmazon.getY() - 1;
         trobat = false;
         while (!trobat && y > -1 && x < s.getSize()) {//paret laterals inferior-dreta
-            if (s.getPos((int)(x), (int)(y)) == CellType.EMPTY) {
+            if (s.getPos((int) (x), (int) (y)) == CellType.EMPTY) {
                 cont++;
             } else {
                 trobat = true;
@@ -352,7 +379,7 @@ public class HacendadoRider implements IPlayer, IAuto {
         y = bestAmazon.getY() + 1;
         trobat = false;
         while (!trobat && x > -1 && y < s.getSize()) {//paret laterals superior-esquerra
-            if (s.getPos((int)(x), (int)(y)) == CellType.EMPTY) {
+            if (s.getPos((int) (x), (int) (y)) == CellType.EMPTY) {
                 cont++;
             } else {
                 trobat = true;
@@ -364,69 +391,73 @@ public class HacendadoRider implements IPlayer, IAuto {
 
         int maxim = Collections.max(direccions);
         int i = 0;
-        if(maxim != 0){
-          trobat = false;
-          while (!trobat){
-            if(direccions.get(i) == maxim) trobat = true;
-            else ++i;
-          }
-        } else i = 9;
-
+        if (maxim != 0) {
+            trobat = false;
+            while (!trobat) {
+                if (direccions.get(i) == maxim) {
+                    trobat = true;
+                } else {
+                    ++i;
+                }
+            }
+        } else {
+            i = 9;
+        }
 
         switch (i) {
             case 0 -> {
                 //contador d'espais buits a la dreta
                 // code block
-                Point mouFletxa = new Point((int)(bestAmazon.getX() + 1), (int)(bestAmazon.getY()));
+                Point mouFletxa = new Point((int) (bestAmazon.getX() + 1), (int) (bestAmazon.getY()));
                 return mouFletxa;
             }
 
             case 1 -> {
                 //contador d'espais buits a l'esquerra
                 // code block
-                Point mouFletxa = new Point((int)(bestAmazon.getX() - 1), (int)(bestAmazon.getY()));
+                Point mouFletxa = new Point((int) (bestAmazon.getX() - 1), (int) (bestAmazon.getY()));
                 return mouFletxa;
             }
 
             case 2 -> {
                 //contador d'espais buits cap a dalt
                 // code block
-                Point mouFletxa = new Point((int)(bestAmazon.getX()), (int)(bestAmazon.getY() + 1));
+                Point mouFletxa = new Point((int) (bestAmazon.getX()), (int) (bestAmazon.getY() + 1));
                 return mouFletxa;
             }
 
             case 3 -> {
                 //contador d'espais buits cap a baix
                 // code block
-                Point mouFletxa = new Point((int)(bestAmazon.getX()), (int)(bestAmazon.getY() - 1));
+                Point mouFletxa = new Point((int) (bestAmazon.getX()), (int) (bestAmazon.getY() - 1));
                 return mouFletxa;
             }
 
             case 4 -> {
                 //contador d'espais buits dreta superior
                 // code block
-                Point mouFletxa = new Point((int)(bestAmazon.getX() + 1), (int)(bestAmazon.getY() + 1));
+                Point mouFletxa = new Point((int) (bestAmazon.getX() + 1), (int) (bestAmazon.getY() + 1));
                 return mouFletxa;
             }
 
             case 5 -> {
                 //contador d'espais buits inferior-esquerra
                 // code block
-                Point mouFletxa = new Point((int)(bestAmazon.getX() - 1), (int)(bestAmazon.getY() - 1));
+                Point mouFletxa = new Point((int) (bestAmazon.getX() - 1), (int) (bestAmazon.getY() - 1));
                 return mouFletxa;
             }
 
             case 6 -> {
                 //contador d'espais buits inferior-dreta
                 // code block
-                Point mouFletxa = new Point((int)(bestAmazon.getX() + 1), (int)(bestAmazon.getY() - 1));
+                Point mouFletxa = new Point((int) (bestAmazon.getX() + 1), (int) (bestAmazon.getY() - 1));
                 return mouFletxa;
             }
 
             case 7 -> {
                 //contador d'espais buits superior-esquerra
                 // code block
-                Point mouFletxa = new Point((int)(bestAmazon.getX() - 1), (int)(bestAmazon.getY() + 1));
+                Point mouFletxa = new Point((int) (bestAmazon.getX() - 1), (int) (bestAmazon.getY() + 1));
                 return mouFletxa;
             }
 
