@@ -25,6 +25,7 @@ public class HacendadoRider implements IPlayer, IAuto {
     private String name;
     private GameStatus s;
     private boolean haAcabat = false;
+    private int nodesExp = 0;
 
     public HacendadoRider(String name) {
         this.name = name;
@@ -46,6 +47,7 @@ public class HacendadoRider implements IPlayer, IAuto {
             //Random rand = new Random();
             //valor = rand.nextInt(500);
             valor = heuristica(s);
+            nodesExp++;
         } else {
             int qn = s.getNumberOfAmazonsForEachColor();
             ArrayList<Point> pendingAmazons = new ArrayList<>();
@@ -56,7 +58,7 @@ public class HacendadoRider implements IPlayer, IAuto {
             for (int i = 0; i < pendingAmazons.size(); i++) {
                 ArrayList<Point> possibleMove = new ArrayList<>();
                 possibleMove = s.getAmazonMoves(pendingAmazons.get(i), false);
-                for (int j = 0; j < possibleMove.size(); j++) {
+                for (int j = 0; j < possibleMove.size() && !haAcabat; j++) {
                     //Moviment Amazona
                     GameStatus backUp = new GameStatus(s);
                     Point actual = new Point(possibleMove.get(j));
@@ -90,6 +92,7 @@ public class HacendadoRider implements IPlayer, IAuto {
             //Random rand = new Random();
             //valor = rand.nextInt(500);
             valor = heuristica(s);
+            nodesExp++;
         } else {
             int qn = s.getNumberOfAmazonsForEachColor();
             ArrayList<Point> pendingAmazons = new ArrayList<>();
@@ -100,7 +103,7 @@ public class HacendadoRider implements IPlayer, IAuto {
             for (int i = 0; i < pendingAmazons.size(); i++) {
                 ArrayList<Point> possibleMove = new ArrayList<>();
                 possibleMove = s.getAmazonMoves(pendingAmazons.get(i), false);
-                for (int j = 0; j < possibleMove.size(); j++) {
+                for (int j = 0; j < possibleMove.size() && !haAcabat; j++) {
                     //Moviment Amazona
                     GameStatus backUp = new GameStatus(s);
                     Point actual = new Point(possibleMove.get(j));
@@ -137,10 +140,10 @@ public class HacendadoRider implements IPlayer, IAuto {
         Point queenTo = null;
         Point queenFrom = null;
         Point arrowTo = null;
-
+        nodesExp =0;
         this.s = s;
         /* coses a tocar*/
-        int depth = 4;
+        int depth = 16;
         int valor = Integer.MIN_VALUE;
         int alpha = 0;        //alpha per la poda alpha-beta
         int beta = 0;         //beta per la poda alpha-beta
@@ -157,7 +160,7 @@ public class HacendadoRider implements IPlayer, IAuto {
         for (int i = 0; i < pendingAmazons.size(); i++) {
             ArrayList<Point> possibleMove = new ArrayList<>();
             possibleMove = s.getAmazonMoves(pendingAmazons.get(i), false);
-            for (int j = 0; j < possibleMove.size(); j++) {
+            for (int j = 0; j < possibleMove.size() && !haAcabat; j++) {
                 GameStatus backUp = new GameStatus(s);
                 Point actual = new Point(possibleMove.get(j));
                 backUp.moveAmazon(pendingAmazons.get(i), actual);
@@ -170,7 +173,7 @@ public class HacendadoRider implements IPlayer, IAuto {
 
                 if (value > valor) {
                     valor = value;
-                    millor = new Move(pendingAmazons.get(i), possibleMove.get(j), arrowTo, 0, 0, SearchType.MINIMAX);
+                    millor = new Move(pendingAmazons.get(i), possibleMove.get(j), arrowTo, nodesExp, depth, SearchType.MINIMAX);
                 }
 
             }
@@ -210,7 +213,6 @@ public class HacendadoRider implements IPlayer, IAuto {
         int res = 0;
 
         CellType player = s.getCurrentPlayer();
-        //fletxa
 
         //jugador amic
         int qn = s.getNumberOfAmazonsForEachColor();
@@ -468,11 +470,6 @@ public class HacendadoRider implements IPlayer, IAuto {
                 return mouFletxa;
             }
         }
-
-        //constants getPos() -> EMPTY, PLAYER1, PLAYER2 o FIRE
-        //for +X,0 getPos(x,y) dreta
-        //for -X,0 esquerre
-        //return res;
         return null;
     }
 }
