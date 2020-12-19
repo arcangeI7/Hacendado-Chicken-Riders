@@ -354,11 +354,7 @@ public class HacendadoRider implements IPlayer, IAuto {
         return res;
     }
 //}
-    /**
-     * 
-     * @param s
-     * @return 
-     */
+
     private Point fletxa(GameStatus s) {
         /* mirem o estan totes les amazones enemigues
      mirem quines tenen mes moviments
@@ -524,63 +520,63 @@ public class HacendadoRider implements IPlayer, IAuto {
         switch (i) {
             case 0 -> {
                 //contador d'espais buits a la dreta
-                // code block
+
                 Point mouFletxa = new Point((int) (bestAmazon.getX() + 1), (int) (bestAmazon.getY()));
                 return mouFletxa;
             }
 
             case 1 -> {
                 //contador d'espais buits a l'esquerra
-                // code block
+
                 Point mouFletxa = new Point((int) (bestAmazon.getX() - 1), (int) (bestAmazon.getY()));
                 return mouFletxa;
             }
 
             case 2 -> {
                 //contador d'espais buits cap a dalt
-                // code block
+
                 Point mouFletxa = new Point((int) (bestAmazon.getX()), (int) (bestAmazon.getY() + 1));
                 return mouFletxa;
             }
 
             case 3 -> {
                 //contador d'espais buits cap a baix
-                // code block
+
                 Point mouFletxa = new Point((int) (bestAmazon.getX()), (int) (bestAmazon.getY() - 1));
                 return mouFletxa;
             }
 
             case 4 -> {
                 //contador d'espais buits dreta superior
-                // code block
+
                 Point mouFletxa = new Point((int) (bestAmazon.getX() + 1), (int) (bestAmazon.getY() + 1));
                 return mouFletxa;
             }
 
             case 5 -> {
                 //contador d'espais buits inferior-esquerra
-                // code block
+
                 Point mouFletxa = new Point((int) (bestAmazon.getX() - 1), (int) (bestAmazon.getY() - 1));
                 return mouFletxa;
             }
 
             case 6 -> {
                 //contador d'espais buits inferior-dreta
-                // code block
+
                 Point mouFletxa = new Point((int) (bestAmazon.getX() + 1), (int) (bestAmazon.getY() - 1));
                 return mouFletxa;
             }
 
             case 7 -> {
                 //contador d'espais buits superior-esquerra
-                // code block
+
                 Point mouFletxa = new Point((int) (bestAmazon.getX() - 1), (int) (bestAmazon.getY() + 1));
                 return mouFletxa;
             }
 
             case 9 -> { //cas en que mercadona chapa el pollo i no queden llocs al voltant del pollo per capar. (la fletxa no te cap lloc al voltant del pollastre)
                 //contador d'espais buits superior-esquerra
-                // code block
+
                 Point mouFletxa = posicioRandom(s);
                 return mouFletxa;
             }
