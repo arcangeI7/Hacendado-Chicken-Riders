@@ -23,8 +23,9 @@ import java.util.Collections;
 import java.util.Random;
 
 /**
- * Classe de l'objecte jugador HacendadoRider del gran joc de 'Game of the Vateres'
- * modificat i adaptat lleugerament per a l'ocasió
+ * Classe de l'objecte jugador HacendadoRider del gran joc de 'Game of the
+ * Vateres' modificat i adaptat lleugerament per a l'ocasió
+ *
  * @author Roger Pérez àlies "rochi" i Jaume ALonso àlies "el presi"
  */
 public class HacendadoRider implements IPlayer, IAuto {
@@ -35,11 +36,13 @@ public class HacendadoRider implements IPlayer, IAuto {
     private int nodesExp = 0; //Nodes totals evaluats en una exploració MINIMAX
     private int prof = 4;  //profunditat per defecte del MINIMAX de ChickenRider
     private int profMax = 16; //profunditat màxima del MINIMAX de ChickenRider
+    private int mode; //Indica si es juga en profunditat o amb temps limit
 
     /**
-     * Constructoria bàsica de la classe ChickenRider. Crea un genet de pollastres
-     * amb el nom donat.
-     * El seu algorisme té la profunditat per defecte
+     * Constructoria bàsica de la classe ChickenRider. Crea un genet de
+     * pollastres amb el nom donat. El seu algorisme té la profunditat per
+     * defecte
+     *
      * @param name - Nom del genet
      */
     public HacendadoRider(String name) {
@@ -48,21 +51,28 @@ public class HacendadoRider implements IPlayer, IAuto {
 
     /**
      * Constructoria de la classe ChickenRider. Crea un genet de pollastres amb
-     * el nom donat i amb la profunditat d'exploració donada que està limitada
-     * a un rang de entre 1 i 16. Si la profunditat és superior, el limit serà 16.
+     * el nom donat i amb la profunditat d'exploració donada que està limitada a
+     * un rang de entre 1 i 16. Si la profunditat és superior, el limit serà 16.
      * Si és inferior a 1, él limit serà 4 (el default)
+     *
      * @param name - Nom del genet
-     * @param depth - Capacitat de visió futura del pollastre (profunditat màxima)
+     * @param depth - Capacitat de visió futura del pollastre (profunditat
+     * màxima)
      */
     public HacendadoRider(String name, int depth) {
         this.name = name;
-        if (depth > profMax) prof = profMax;
-        else if (depth < 1) prof = 4;
-        else prof = depth;
+        if (depth > profMax) {
+            prof = profMax;
+        } else if (depth < 1) {
+            prof = 4;
+        } else {
+            prof = depth;
+        }
     }
 
     /**
-     * Funció que modifica un flag que serveix per indicar la finalització del Iterative Deeping
+     * Funció que modifica un flag que serveix per indicar la finalització del
+     * Iterative Deeping
      */
     @Override
     public void timeout() {
@@ -71,28 +81,30 @@ public class HacendadoRider implements IPlayer, IAuto {
     }
 
     /**
-     * Funció Min-Max corresponent a la part maximitzadora que cerca el millor moviment
-     * que pot realitzar el genet de pollastres tenint en compte la poda Alpha-Beta,
-     * és a dir, els valors que es va tenint en compte durant l'execució per desestimar
-     * els camins menys prometedors. La profunditat o capacitat de visió del pollastre
-     * és el límit al seu raonament, és a dir, quan el supera atura tota activitat cerebral
-     * i torna el millor valor en el torn actual
+     * Funció Min-Max corresponent a la part maximitzadora que cerca el millor
+     * moviment que pot realitzar el genet de pollastres tenint en compte la
+     * poda Alpha-Beta, és a dir, els valors que es va tenint en compte durant
+     * l'execució per desestimar els camins menys prometedors. La profunditat o
+     * capacitat de visió del pollastre és el límit al seu raonament, és a dir,
+     * quan el supera atura tota activitat cerebral i torna el millor valor en
+     * el torn actual
      *
      * @param s - Estat actual del Joc
      * @param alpha - Valor de la poda Alpha-Beta
      * @param beta - Valor de la poda Alpha-Beta
-     * @param depth - Visions futures restants del pollastre (Profunditat actual)
+     * @param depth - Visions futures restants del pollastre (Profunditat
+     * actual)
      * @param player - Tipus de genet de pollastres en el torn actual
      * @return - Il.luminació màxima del pollastre (el valor màxim)
-     * @see   isGameOver
-     * @see   Point
-     * @see   GameStatus
-     * @see   CellType
-     * @see   getNumberOfAmazonsForEachColor
-     * @see   getAmazon
-     * @see   getAmazonMoves
+     * @see isGameOver
+     * @see Point
+     * @see GameStatus
+     * @see CellType
+     * @see getNumberOfAmazonsForEachColor
+     * @see getAmazon
+     * @see getAmazonMoves
      */
-    private int max(GameStatus s, int alpha, int beta, int depth, CellType player) {
+    private int maxProf(GameStatus s, int alpha, int beta, int depth, CellType player) {
         //Point queenTo = null;
         //Point queenFrom = null;
         Point arrowTo = null;
@@ -102,8 +114,7 @@ public class HacendadoRider implements IPlayer, IAuto {
         if (depth == 0 || s.isGameOver()) {
             valor = heuristica(s);
             nodesExp++;
-        }
-        //El pollastre segueix generant futurs alternatius
+        } //El pollastre segueix generant futurs alternatius
         else {
             // Obtenim les fitxes del jugador actual
             int qn = s.getNumberOfAmazonsForEachColor();
@@ -117,7 +128,7 @@ public class HacendadoRider implements IPlayer, IAuto {
             for (int i = 0; i < pendingAmazons.size(); i++) {
                 ArrayList<Point> possibleMove = new ArrayList<>();
                 possibleMove = s.getAmazonMoves(pendingAmazons.get(i), false);
-                for (int j = 0; j < possibleMove.size() && !haAcabat; j++) {
+                for (int j = 0; j < possibleMove.size(); j++) {
 
                     //Moviment Amazona
                     GameStatus backUp = new GameStatus(s);
@@ -128,14 +139,16 @@ public class HacendadoRider implements IPlayer, IAuto {
                     arrowTo = fletxa(backUp);
 
                     //Crida Minimitzadora
-                    int value = min(backUp, alpha, beta, depth - 1, player);
+                    int value = minProf(backUp, alpha, beta, depth - 1, player);
 
                     //Millor visió del pollastre
                     valor = Math.max(valor, value);
 
                     //Poda Alpha-Beta
                     alpha = Math.max(valor, alpha);
-                    if (beta <= alpha) return valor;
+                    if (beta <= alpha) {
+                        return valor;
+                    }
                 }
             }
         }
@@ -143,28 +156,30 @@ public class HacendadoRider implements IPlayer, IAuto {
     }
 
     /**
-    * Funció Min-Max corresponent a la part minimitzadora que cerca el pitjor moviment
-    * que pot realitzar el genet de pollastres tenint en compte la poda Alpha-Beta,
-    * és a dir, els valors que es va tenint en compte durant l'execució per desestimar
-    * els camins menys prometedors. La profunditat o capacitat de visió del pollastre
-    * és el límit al seu raonament, és a dir, quan el supera atura tota activitat cerebral
-    * i torna el pitjor futur en el torn actual
-    *
-    * @param s - Estat actual del Joc
-    * @param alpha - Valor de la poda Alpha-Beta
-    * @param beta - Valor de la poda Alpha-Beta
-    * @param depth - Visions futures restants del pollastre (Profunditat actual)
-    * @param player - Tipus de genet de pollastres en el torn actual
-    * @return - Il.luminació mínima del pollastre (el valor mínim)
-    * @see   isGameOver
-    * @see   Point
-    * @see   GameStatus
-    * @see   CellType
-    * @see   getNumberOfAmazonsForEachColor
-    * @see   getAmazon
-    * @see   getAmazonMoves
+     * Funció Min-Max corresponent a la part minimitzadora que cerca el pitjor
+     * moviment que pot realitzar el genet de pollastres tenint en compte la
+     * poda Alpha-Beta, és a dir, els valors que es va tenint en compte durant
+     * l'execució per desestimar els camins menys prometedors. La profunditat o
+     * capacitat de visió del pollastre és el límit al seu raonament, és a dir,
+     * quan el supera atura tota activitat cerebral i torna el pitjor futur en
+     * el torn actual
+     *
+     * @param s - Estat actual del Joc
+     * @param alpha - Valor de la poda Alpha-Beta
+     * @param beta - Valor de la poda Alpha-Beta
+     * @param depth - Visions futures restants del pollastre (Profunditat
+     * actual)
+     * @param player - Tipus de genet de pollastres en el torn actual
+     * @return - Il.luminació mínima del pollastre (el valor mínim)
+     * @see isGameOver
+     * @see Point
+     * @see GameStatus
+     * @see CellType
+     * @see getNumberOfAmazonsForEachColor
+     * @see getAmazon
+     * @see getAmazonMoves
      */
-    private int min(GameStatus s, int alpha, int beta, int depth, CellType player) {
+    private int minProf(GameStatus s, int alpha, int beta, int depth, CellType player) {
 //        Point queenTo = null;
 //        Point queenFrom = null;
         Point arrowTo = null;
@@ -174,8 +189,7 @@ public class HacendadoRider implements IPlayer, IAuto {
         if (depth == 0 || s.isGameOver()) {
             valor = heuristica(s);
             nodesExp++;
-        }
-        // El pollastre segueix generant futurs alternatius
+        } // El pollastre segueix generant futurs alternatius
         else {
             // Obtenim les fitxes del jugador actual
             int qn = s.getNumberOfAmazonsForEachColor();
@@ -186,6 +200,81 @@ public class HacendadoRider implements IPlayer, IAuto {
             // Analitzem tots els estats del joc. Per cada amazona, busquem tots
             // els seus llocs disponibles i el millor lloc per col.locar la fletxa
             for (int i = 0; i < pendingAmazons.size(); i++) {
+                ArrayList<Point> possibleMove = new ArrayList<>();
+                possibleMove = s.getAmazonMoves(pendingAmazons.get(i), false);
+                for (int j = 0; j < possibleMove.size(); j++) {
+
+                    //Moviment Amazona
+                    GameStatus backUp = new GameStatus(s);
+                    Point actual = new Point(possibleMove.get(j));
+                    backUp.moveAmazon(pendingAmazons.get(i), actual);
+
+                    //Moviment Fletxa
+                    arrowTo = fletxa(backUp);
+
+                    //Crida Minimitzadora
+                    int value = maxProf(backUp, alpha, beta, depth - 1, player);
+
+                    //Ceguera màxima del pollastre (Si el valor és molt baix, no el segueixis)
+                    valor = Math.min(valor, value);
+
+                    //Poda Alpha-Beta
+                    beta = Math.min(valor, beta);
+                    if (beta <= alpha) {
+                        return valor;
+                    }
+
+                }
+            }
+        }
+        return valor;
+    }
+
+    /**
+     * Funció Min-Max corresponent a la part maximitzadora que cerca el millor
+     * moviment que pot realitzar el genet de pollastres tenint en compte la
+     * poda Alpha-Beta, és a dir, els valors que es va tenint en compte durant
+     * l'execució per desestimar els camins menys prometedors. La profunditat o
+     * capacitat de visió del pollastre és el límit al seu raonament, és a dir,
+     * quan el supera atura tota activitat cerebral i torna el millor valor en
+     * el torn actual
+     *
+     * @param s - Estat actual del Joc
+     * @param alpha - Valor de la poda Alpha-Beta
+     * @param beta - Valor de la poda Alpha-Beta
+     * @param depth - Visions futures restants del pollastre (Profunditat
+     * actual)
+     * @param player - Tipus de genet de pollastres en el torn actual
+     * @return - Il.luminació màxima del pollastre (el valor màxim)
+     * @see isGameOver
+     * @see Point
+     * @see GameStatus
+     * @see CellType
+     * @see getNumberOfAmazonsForEachColor
+     * @see getAmazon
+     * @see getAmazonMoves
+     */
+    private int maxIter(GameStatus s, int alpha, int beta, CellType player) {
+
+        Point arrowTo = null;
+        Integer valor = Integer.MIN_VALUE;
+
+        //Valoració de l'estat del joc - El pollastre cessa la seva activitat mental
+        if (s.isGameOver()) {
+            valor = heuristica(s);
+            nodesExp++;
+        } //El pollastre segueix generant futurs alternatius
+        else {
+            // Obtenim les fitxes del jugador actual
+            int qn = s.getNumberOfAmazonsForEachColor();
+            ArrayList<Point> pendingAmazons = new ArrayList<>();
+            for (int q = 0; q < qn && !haAcabat; q++) {
+                pendingAmazons.add(s.getAmazon(player, q));
+            }
+
+            // Analitzem tots els estats del joc. Per cada amazona, busquem tots
+            // els seus llocs disponibles i el millor lloc per col.locar la fletxa
+            for (int i = 0; i < pendingAmazons.size() && !haAcabat; i++) {
                 ArrayList<Point> possibleMove = new ArrayList<>();
                 possibleMove = s.getAmazonMoves(pendingAmazons.get(i), false);
                 for (int j = 0; j < possibleMove.size() && !haAcabat; j++) {
@@ -199,14 +288,89 @@ public class HacendadoRider implements IPlayer, IAuto {
                     arrowTo = fletxa(backUp);
 
                     //Crida Minimitzadora
-                    int value = max(backUp, alpha, beta, depth - 1, player);
+                    int value = minIter(backUp, alpha, beta, player);
+
+                    //Millor visió del pollastre
+                    valor = Math.max(valor, value);
+
+                    //Poda Alpha-Beta
+                    alpha = Math.max(valor, alpha);
+                    if (beta <= alpha) {
+                        return valor;
+                    }
+                }
+            }
+        }
+        return valor;
+    }
+
+    /**
+     * Funció Min-Max corresponent a la part minimitzadora que cerca el pitjor
+     * moviment que pot realitzar el genet de pollastres tenint en compte la
+     * poda Alpha-Beta, és a dir, els valors que es va tenint en compte durant
+     * l'execució per desestimar els camins menys prometedors. La profunditat o
+     * capacitat de visió del pollastre és el límit al seu raonament, és a dir,
+     * quan el supera atura tota activitat cerebral i torna el pitjor futur en
+     * el torn actual
+     *
+     * @param s - Estat actual del Joc
+     * @param alpha - Valor de la poda Alpha-Beta
+     * @param beta - Valor de la poda Alpha-Beta
+     * @param depth - Visions futures restants del pollastre (Profunditat
+     * actual)
+     * @param player - Tipus de genet de pollastres en el torn actual
+     * @return - Il.luminació mínima del pollastre (el valor mínim)
+     * @see isGameOver
+     * @see Point
+     * @see GameStatus
+     * @see CellType
+     * @see getNumberOfAmazonsForEachColor
+     * @see getAmazon
+     * @see getAmazonMoves
+     */
+    private int minIter(GameStatus s, int alpha, int beta, CellType player) {
+
+        Point arrowTo = null;
+        Integer valor = Integer.MAX_VALUE;
+
+        // Valoració de l'estat del joc - El pollastre cessa la seva activitat mental
+        if (s.isGameOver()) {
+            valor = heuristica(s);
+            nodesExp++;
+        } // El pollastre segueix generant futurs alternatius
+        else {
+            // Obtenim les fitxes del jugador actual
+            int qn = s.getNumberOfAmazonsForEachColor();
+            ArrayList<Point> pendingAmazons = new ArrayList<>();
+            for (int q = 0; q < qn && !haAcabat; q++) {
+                pendingAmazons.add(s.getAmazon(player, q));
+            }
+            // Analitzem tots els estats del joc. Per cada amazona, busquem tots
+            // els seus llocs disponibles i el millor lloc per col.locar la fletxa
+            for (int i = 0; i < pendingAmazons.size() && !haAcabat; i++) {
+                ArrayList<Point> possibleMove = new ArrayList<>();
+                possibleMove = s.getAmazonMoves(pendingAmazons.get(i), false);
+                for (int j = 0; j < possibleMove.size() && !haAcabat; j++) {
+
+                    //Moviment Amazona
+                    GameStatus backUp = new GameStatus(s);
+                    Point actual = new Point(possibleMove.get(j));
+                    backUp.moveAmazon(pendingAmazons.get(i), actual);
+
+                    //Moviment Fletxa
+                    arrowTo = fletxa(backUp);
+
+                    //Crida Minimitzadora
+                    int value = maxIter(backUp, alpha, beta, player);
 
                     //Ceguera màxima del pollastre (Si el valor és molt baix, no el segueixis)
                     valor = Math.min(valor, value);
 
                     //Poda Alpha-Beta
                     beta = Math.min(valor, beta);
-                    if (beta <= alpha) return valor;
+                    if (beta <= alpha) {
+                        return valor;
+                    }
 
                 }
             }
@@ -215,67 +379,93 @@ public class HacendadoRider implements IPlayer, IAuto {
     }
 
     /**
-     * Decideix el moviment del genet de pollastres de la casa Hacendado - ChickenRider usant un MINIMAX
+     * Decideix el moviment del genet de pollastres de la casa Hacendado -
+     * ChickenRider usant un MINIMAX
      *
      * @param s - Estat actual de joc.
      * @return - Millor moviment generat pel pollastre.
-     * @see   getCurrentPlayer
-     * @see   Point
-     * @see   GameStatus
-     * @see   CellType
-     * @see   getNumberOfAmazonsForEachColor
-     * @see   getAmazon
-     * @see   getAmazonMoves
+     * @see getCurrentPlayer
+     * @see Point
+     * @see GameStatus
+     * @see CellType
+     * @see getNumberOfAmazonsForEachColor
+     * @see getAmazon
+     * @see getAmazonMoves
      */
     @Override
     public Move move(GameStatus s) {
-        Point queenTo = null;
-        Point queenFrom = null;
+
         Point arrowTo = null;
-        nodesExp =0;
+        nodesExp = 0;
         this.s = s;
         /* coses a tocar*/
-        int depth = 16;
+        //int depth = 16;
         int valor = Integer.MIN_VALUE;
-        int alpha = 0;        //alpha per la poda alpha-beta
-        int beta = 0;         //beta per la poda alpha-beta
+        int alpha = Integer.MIN_VALUE;        //alpha per la poda alpha-beta
+        int beta = Integer.MAX_VALUE;         //beta per la poda alpha-beta
         Move millor = null;
         //////////////////////////
 
         CellType player = s.getCurrentPlayer();
         int qn = s.getNumberOfAmazonsForEachColor();
         ArrayList<Point> pendingAmazons = new ArrayList<>();
-        for (int q = 0; q < qn; q++) {
-            pendingAmazons.add(s.getAmazon(player, q));
-        }
+        if (mode == 0) { //mode amb profunditat
+            for (int q = 0; q < qn && !haAcabat; q++) {
+                pendingAmazons.add(s.getAmazon(player, q));
+            }
 
-        for (int i = 0; i < pendingAmazons.size(); i++) {
-            ArrayList<Point> possibleMove = new ArrayList<>();
-            possibleMove = s.getAmazonMoves(pendingAmazons.get(i), false);
-            for (int j = 0; j < possibleMove.size() && !haAcabat; j++) {
-                GameStatus backUp = new GameStatus(s);
-                Point actual = new Point(possibleMove.get(j));
-                backUp.moveAmazon(pendingAmazons.get(i), actual);
-                //moure fletxa
-                //arrowTo = posicioRandom(backUp);
-                arrowTo = fletxa(backUp);
+            for (int i = 0; i < pendingAmazons.size(); i++) {
+                ArrayList<Point> possibleMove = new ArrayList<>();
+                possibleMove = s.getAmazonMoves(pendingAmazons.get(i), false);
+                for (int j = 0; j < possibleMove.size(); j++) {
+                    GameStatus backUp = new GameStatus(s);
+                    Point actual = new Point(possibleMove.get(j));
+                    backUp.moveAmazon(pendingAmazons.get(i), actual);
 
-                //crida al MiniMax
-                int value = min(backUp, alpha, beta, depth - 1, player);
+                    //crida al MiniMax
+                    int value = minProf(backUp, alpha, beta, prof - 1, player);
 
-                if (value > valor) {
-                    valor = value;
-                    millor = new Move(pendingAmazons.get(i), possibleMove.get(j), arrowTo, nodesExp, depth, SearchType.MINIMAX);
+                    //Movimemt fletxa
+                    arrowTo = fletxa(backUp);
+                    if (value > valor) {
+                        valor = value;
+                        millor = new Move(pendingAmazons.get(i), possibleMove.get(j), arrowTo, nodesExp, prof, SearchType.MINIMAX);
+                    }
+
                 }
 
             }
+        } else {
+            for (int q = 0; q < qn && !haAcabat; q++) {
+                pendingAmazons.add(s.getAmazon(player, q));
+            }
 
+            for (int i = 0; i < pendingAmazons.size() && !haAcabat; i++) {
+                ArrayList<Point> possibleMove = new ArrayList<>();
+                possibleMove = s.getAmazonMoves(pendingAmazons.get(i), false);
+                for (int j = 0; j < possibleMove.size() && !haAcabat; j++) {
+                    GameStatus backUp = new GameStatus(s);
+                    Point actual = new Point(possibleMove.get(j));
+                    backUp.moveAmazon(pendingAmazons.get(i), actual);
+
+                    //crida al MiniMax
+                    int value = minIter(backUp, alpha, beta, player);
+
+                    //Movimemt fletxa
+                    arrowTo = fletxa(backUp);
+                    if (value > valor) {
+                        valor = value;
+                        millor = new Move(pendingAmazons.get(i), possibleMove.get(j), arrowTo, nodesExp, prof, SearchType.MINIMAX);
+                    }
+                }
+            }
         }
         return millor;
     }
 
     /**
      * Getter que obté el nom del genet de pollastres
+     *
      * @return nom del genet del pollastres
      */
     @Override
@@ -284,7 +474,8 @@ public class HacendadoRider implements IPlayer, IAuto {
     }
 
     /**
-     * Ens dóna una posició al.leatòria de la fletxa en una casella buida en el tauler de joc
+     * Ens dóna una posició al.leatòria de la fletxa en una casella buida en el
+     * tauler de joc
      *
      * @param s - Estat actual de joc.
      * @return Una punt en el tauler
@@ -311,8 +502,11 @@ public class HacendadoRider implements IPlayer, IAuto {
     }
 
     /**
-     * Funció corresponent a l'heurística del genet de pollastres. Indica amb un enter com de favorable és la posició del genet en el tauler.
-     * Aquest valor el determina realitzant la diferencia dels movients possibles dels 2 jugadors
+     * Funció corresponent a l'heurística del genet de pollastres. Indica amb un
+     * enter com de favorable és la posició del genet en el tauler. Aquest valor
+     * el determina realitzant la diferencia dels movients possibles dels 2
+     * jugadors
+     *
      * @param s - Estar actual del torn
      * @return - Valoració del estat actual
      * @see CellType
@@ -357,8 +551,12 @@ public class HacendadoRider implements IPlayer, IAuto {
 //}
 
     /**
-     * Funció que indica el mmillor lloc per col.locar la flexta. Busca la fitxa amb més moviments enemiga i posa la fletxa al seu davant en el sentit que te mes llibertat
-     * En el cas extrem on no és pot moure cap fitxa (la nostra peça a tancat a ala ultima fitxa perque no tenia més remei), col.loca la fletxa aleatoriament
+     * Funció que indica el mmillor lloc per col.locar la flexta. Busca la fitxa
+     * amb més moviments enemiga i posa la fletxa al seu davant en el sentit que
+     * te mes llibertat En el cas extrem on no és pot moure cap fitxa (la nostra
+     * peça a tancat a ala ultima fitxa perque no tenia més remei), col.loca la
+     * fletxa aleatoriament
+     *
      * @param s - Estar actual del torn
      * @return - Punt on és coloca la fletxa
      * @see CellType
@@ -392,7 +590,6 @@ public class HacendadoRider implements IPlayer, IAuto {
 
         //Valoració de la direccio i sentit que perjudiquen més a la peça seleccionada
         //S'avaluen totes les direccion i sentits
-
         ///////case0
         int cont = 0; //contador d'espais buits a la dreta
 
@@ -408,7 +605,6 @@ public class HacendadoRider implements IPlayer, IAuto {
             x++;
         }
         direccions.add(cont);
-
 
         ///////case1
         cont = 0;//contador d'espais buits a l'esquerra
