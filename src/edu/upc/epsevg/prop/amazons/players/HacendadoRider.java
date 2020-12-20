@@ -285,7 +285,7 @@ public class HacendadoRider implements IPlayer, IAuto {
 
     /**
      * Ens dóna una posició al.leatòria de la fletxa en una casella buida en el tauler de joc
-     * 
+     *
      * @param s - Estat actual de joc.
      * @return Una punt en el tauler
      * @see CellType
@@ -311,9 +311,10 @@ public class HacendadoRider implements IPlayer, IAuto {
     }
 
     /**
-     * Funció heurística del genet de pollastres que
-     * @param s
-     * @return
+     * Funció corresponent a l'heurística del genet de pollastres. Indica amb un enter com de favorable és la posició del genet en el tauler.
+     * Aquest valor el determina realitzant la diferencia dels movients possibles dels 2 jugadors
+     * @param s - Estar actual del torn
+     * @return - Valoració del estat actual
      * @see CellType
      * @see getCurrentPlayer
      * @see getNumberOfAmazonsForEachColor
@@ -321,11 +322,11 @@ public class HacendadoRider implements IPlayer, IAuto {
      * @see getAmazon
      */
     private int heuristica(GameStatus s) {
+        //Valoració final
         int res = 0;
 
+        //Valoració del genet de pollastres
         CellType player = s.getCurrentPlayer();
-
-        //jugador amic
         int qn = s.getNumberOfAmazonsForEachColor();
         ArrayList<Point> pendingAmazons = new ArrayList<>();
         for (int q = 0; q < qn; q++) {
@@ -338,7 +339,7 @@ public class HacendadoRider implements IPlayer, IAuto {
             res += possibleMove.size();
         }
 
-        //jugador enemic
+        //Valoració del rival
         player = player.opposite(player);
         pendingAmazons = new ArrayList<>();
         for (int q = 0; q < qn; q++) {
@@ -355,11 +356,19 @@ public class HacendadoRider implements IPlayer, IAuto {
     }
 //}
 
+    /**
+     * Funció que indica el mmillor lloc per col.locar la flexta. Busca la fitxa amb més moviments enemiga i posa la fletxa al seu davant en el sentit que te mes llibertat
+     * En el cas extrem on no és pot moure cap fitxa (la nostra peça a tancat a ala ultima fitxa perque no tenia més remei), col.loca la fletxa aleatoriament
+     * @param s - Estar actual del torn
+     * @return - Punt on és coloca la fletxa
+     * @see CellType
+     * @see getCurrentPlayer
+     * @see getNumberOfAmazonsForEachColor
+     * @see getAmazonMoves
+     * @see getAmazon
+     */
     private Point fletxa(GameStatus s) {
-        /* mirem o estan totes les amazones enemigues
-     mirem quines tenen mes moviments
-     tanquem la direccio millor a la que te mes moviments
-         */
+        //Obtenim les peces enemigues
         ArrayList<Integer> direccions = new ArrayList<>();
         CellType player = s.getCurrentPlayer();
         player = player.opposite(player);
@@ -368,20 +377,24 @@ public class HacendadoRider implements IPlayer, IAuto {
         for (int q = 0; q < qn; q++) {
             pendingAmazons.add(s.getAmazon(player, q));
         }
+
+        //El.lecció de la peça enemiga amb més movients
         int movesAmazon = 0;
         Point bestAmazon = new Point(0, 0);
-        for (int i = 0; i < pendingAmazons.size(); i++) { //escollir millor Amazon enemiga per putejar
+        for (int i = 0; i < pendingAmazons.size(); i++) {
             ArrayList<Point> possibleMove = new ArrayList<>();
             possibleMove = s.getAmazonMoves(pendingAmazons.get(i), false);
-
             if (possibleMove.size() > movesAmazon) {
                 bestAmazon = pendingAmazons.get(i);
                 movesAmazon = possibleMove.size();
             }
         }
 
-        //puteada de la bestAmazon
-        int cont = 0;//contador d'espais buits a la dreta
+        //Valoració de la direccio i sentit que perjudiquen més a la peça seleccionada
+        //S'avaluen totes les direccion i sentits
+
+        ///////case0
+        int cont = 0; //contador d'espais buits a la dreta
 
         double x = bestAmazon.getX() + 1;
         double y = bestAmazon.getY();
@@ -395,6 +408,9 @@ public class HacendadoRider implements IPlayer, IAuto {
             x++;
         }
         direccions.add(cont);
+
+
+        ///////case1
         cont = 0;//contador d'espais buits a l'esquerra
 
         x = bestAmazon.getX() - 1;
@@ -409,6 +425,7 @@ public class HacendadoRider implements IPlayer, IAuto {
         }
         direccions.add(cont);
 
+        ///////case2
         cont = 0;//contador d'espais buits cap a dalt
 
         x = bestAmazon.getX();
@@ -424,6 +441,7 @@ public class HacendadoRider implements IPlayer, IAuto {
         }
         direccions.add(cont);
 
+        ///////case3
         cont = 0;//contador d'espais buits cap a baix
 
         y = bestAmazon.getY() - 1;
@@ -438,6 +456,7 @@ public class HacendadoRider implements IPlayer, IAuto {
         }
         direccions.add(cont);
 
+        ///////case4
         cont = 0;//contador d'espais buits dreta superior
 
         x = bestAmazon.getX() + 1;
@@ -454,6 +473,7 @@ public class HacendadoRider implements IPlayer, IAuto {
         }
         direccions.add(cont);
 
+        ///////case5
         cont = 0;//contador d'espais buits inferior-esquerra
 
         x = bestAmazon.getX() - 1;
@@ -470,6 +490,7 @@ public class HacendadoRider implements IPlayer, IAuto {
         }
         direccions.add(cont);
 
+        ///////case6
         cont = 0;//contador d'espais buits inferior-dreta
 
         x = bestAmazon.getX() + 1;
@@ -486,6 +507,7 @@ public class HacendadoRider implements IPlayer, IAuto {
         }
         direccions.add(cont);
 
+        ///////case7
         cont = 0;//contador d'espais buits superior-esquerra
 
         x = bestAmazon.getX() - 1;
@@ -502,6 +524,7 @@ public class HacendadoRider implements IPlayer, IAuto {
         }
         direccions.add(cont);
 
+        //Eleccio de la direccio més perjudicial. Si la peça no té forats disponibles, es busca un forat aleatori
         int maxim = Collections.max(direccions);
         int i = 0;
         if (maxim != 0) {
@@ -517,66 +540,58 @@ public class HacendadoRider implements IPlayer, IAuto {
             i = 9;
         }
 
+        //Obtenim el punt on posarem la fletxa. El cas 9, es un cas extrem on no tenim lloc per posar la fletxa. En aquest cas es genera un lloc aleatori
         switch (i) {
             case 0 -> {
                 //contador d'espais buits a la dreta
-
                 Point mouFletxa = new Point((int) (bestAmazon.getX() + 1), (int) (bestAmazon.getY()));
                 return mouFletxa;
             }
 
             case 1 -> {
                 //contador d'espais buits a l'esquerra
-
                 Point mouFletxa = new Point((int) (bestAmazon.getX() - 1), (int) (bestAmazon.getY()));
                 return mouFletxa;
             }
 
             case 2 -> {
                 //contador d'espais buits cap a dalt
-
                 Point mouFletxa = new Point((int) (bestAmazon.getX()), (int) (bestAmazon.getY() + 1));
                 return mouFletxa;
             }
 
             case 3 -> {
                 //contador d'espais buits cap a baix
-
                 Point mouFletxa = new Point((int) (bestAmazon.getX()), (int) (bestAmazon.getY() - 1));
                 return mouFletxa;
             }
 
             case 4 -> {
                 //contador d'espais buits dreta superior
-
                 Point mouFletxa = new Point((int) (bestAmazon.getX() + 1), (int) (bestAmazon.getY() + 1));
                 return mouFletxa;
             }
 
             case 5 -> {
                 //contador d'espais buits inferior-esquerra
-
                 Point mouFletxa = new Point((int) (bestAmazon.getX() - 1), (int) (bestAmazon.getY() - 1));
                 return mouFletxa;
             }
 
             case 6 -> {
                 //contador d'espais buits inferior-dreta
-
                 Point mouFletxa = new Point((int) (bestAmazon.getX() + 1), (int) (bestAmazon.getY() - 1));
                 return mouFletxa;
             }
 
             case 7 -> {
                 //contador d'espais buits superior-esquerra
-
                 Point mouFletxa = new Point((int) (bestAmazon.getX() - 1), (int) (bestAmazon.getY() + 1));
                 return mouFletxa;
             }
 
             case 9 -> { //cas en que mercadona chapa el pollo i no queden llocs al voltant del pollo per capar. (la fletxa no te cap lloc al voltant del pollastre)
                 //contador d'espais buits superior-esquerra
-
                 Point mouFletxa = posicioRandom(s);
                 return mouFletxa;
             }
