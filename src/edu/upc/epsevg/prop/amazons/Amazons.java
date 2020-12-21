@@ -25,7 +25,7 @@ public class Amazons {
             public void run() {
 
                 //IPlayer player1 = new HumanPlayer("Oferta");
-                IPlayer player1 = new HacendadoRider("Chicken-Rider");
+                IPlayer player1 = new HacendadoRider("Chicken-Rider",4);
                 //IPlayer player2 = new RandomPlayer("Chicken-Rider");
                 IPlayer player2 = new CarlinhosPlayer();
 
