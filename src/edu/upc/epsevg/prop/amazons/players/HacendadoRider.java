@@ -95,13 +95,6 @@ public class HacendadoRider implements IPlayer, IAuto {
      * actual)
      * @param player - Tipus de genet de pollastres en el torn actual
      * @return - Il.luminació màxima del pollastre (el valor màxim)
-     * @see isGameOver
-     * @see Point
-     * @see GameStatus
-     * @see CellType
-     * @see getNumberOfAmazonsForEachColor
-     * @see getAmazon
-     * @see getAmazonMoves
      */
     private int maxProf(GameStatus s, int alpha, int beta, int depth, CellType player) {
 
@@ -168,13 +161,6 @@ public class HacendadoRider implements IPlayer, IAuto {
      * actual)
      * @param player - Tipus de genet de pollastres en el torn actual
      * @return - Il.luminació mínima del pollastre (el valor mínim)
-     * @see isGameOver
-     * @see Point
-     * @see GameStatus
-     * @see CellType
-     * @see getNumberOfAmazonsForEachColor
-     * @see getAmazon
-     * @see getAmazonMoves
      */
     private int minProf(GameStatus s, int alpha, int beta, int depth, CellType player) {
 
@@ -241,13 +227,6 @@ public class HacendadoRider implements IPlayer, IAuto {
      * actual)
      * @param player - Tipus de genet de pollastres en el torn actual
      * @return - Il.luminació màxima del pollastre (el valor màxim)
-     * @see isGameOver
-     * @see Point
-     * @see GameStatus
-     * @see CellType
-     * @see getNumberOfAmazonsForEachColor
-     * @see getAmazon
-     * @see getAmazonMoves
      */
     private int maxIter(GameStatus s, int alpha, int beta, int depth, CellType player) {
 
@@ -319,13 +298,6 @@ public class HacendadoRider implements IPlayer, IAuto {
      * actual)
      * @param player - Tipus de genet de pollastres en el torn actual
      * @return - Il.luminació mínima del pollastre (el valor mínim)
-     * @see isGameOver
-     * @see Point
-     * @see GameStatus
-     * @see CellType
-     * @see getNumberOfAmazonsForEachColor
-     * @see getAmazon
-     * @see getAmazonMoves
      */
     private int minIter(GameStatus s, int alpha, int beta, int depth, CellType player) {
 
@@ -386,13 +358,6 @@ public class HacendadoRider implements IPlayer, IAuto {
      *
      * @param s - Estat actual de joc.
      * @return - Millor moviment generat pel pollastre.
-     * @see getCurrentPlayer
-     * @see Point
-     * @see GameStatus
-     * @see CellType
-     * @see getNumberOfAmazonsForEachColor
-     * @see getAmazon
-     * @see getAmazonMoves
      */
     @Override
     public Move move(GameStatus s) {
@@ -496,9 +461,6 @@ public class HacendadoRider implements IPlayer, IAuto {
      *
      * @param s - Estat actual de joc.
      * @return Una punt en el tauler
-     * @see CellType
-     * @see Random
-     * @see getEmptyCellsCount
      */
     private Point posicioRandom(GameStatus s) {
         int n = s.getEmptyCellsCount();
@@ -526,11 +488,6 @@ public class HacendadoRider implements IPlayer, IAuto {
      *
      * @param s - Estar actual del torn
      * @return - Valoració del estat actual
-     * @see CellType
-     * @see getCurrentPlayer
-     * @see getNumberOfAmazonsForEachColor
-     * @see getAmazonMoves
-     * @see getAmazon
      */
     private int heuristica(GameStatus s) {
         //Valoració final
@@ -565,7 +522,6 @@ public class HacendadoRider implements IPlayer, IAuto {
 
         return res;
     }
-//}
 
     /**
      * Funció que indica el mmillor lloc per col.locar la flexta. Busca la fitxa
@@ -576,11 +532,6 @@ public class HacendadoRider implements IPlayer, IAuto {
      *
      * @param s - Estar actual del torn
      * @return - Punt on és coloca la fletxa
-     * @see CellType
-     * @see getCurrentPlayer
-     * @see getNumberOfAmazonsForEachColor
-     * @see getAmazonMoves
-     * @see getAmazon
      */
     private Point fletxa(GameStatus s) {
         //Obtenim les peces enemigues

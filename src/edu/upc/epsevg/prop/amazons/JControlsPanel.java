@@ -223,23 +223,6 @@ public class JControlsPanel extends javax.swing.JPanel implements ActionListener
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
     }// </editor-fold>//GEN-END:initComponents
-
-    public class AudioPlayerExample1 implements LineListener {
-     
-    /**
-     * this flag indicates whether the playback completes or not.
-     */
-    boolean playCompleted;
-     
-    /**
-     * Play a given audio file.
-     * @param audioFilePath Path of the audio file.
-     */
-   @Override
-        public void update(LineEvent event) {
-            throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-        }
-    }
     
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnStart;
