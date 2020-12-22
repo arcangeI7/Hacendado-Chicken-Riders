@@ -25,6 +25,11 @@ import javax.sound.sampled.UnsupportedAudioFileException;
 import javax.swing.ImageIcon;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
+//import javax.swing.SwingUtilities;
+import java.io.BufferedInputStream;
+//import javax.sound.sampled.AudioInputStream;
+//import javax.sound.sampled.AudioSystem;
+//import javax.sound.sampled.Clip;
 
 /*
  * To change this license header, choose License Headers in Project Properties.
@@ -150,6 +155,11 @@ public class JControlsPanel extends javax.swing.JPanel implements ActionListener
 
         btnStart.setText("Start");
         btnStart.setToolTipText("");
+        btnStart.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnStartActionPerformed(evt);
+            }
+        });
 
         lblThinking.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         lblThinking.setMaximumSize(new java.awt.Dimension(128, 128));
@@ -175,12 +185,12 @@ public class JControlsPanel extends javax.swing.JPanel implements ActionListener
                     .addGroup(layout.createSequentialGroup()
                         .addGap(24, 24, 24)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                            .addComponent(txfPlayer2, javax.swing.GroupLayout.DEFAULT_SIZE, 262, Short.MAX_VALUE)
+                            .addComponent(txfPlayer2)
                             .addComponent(txfPlayer1)
                             .addGroup(layout.createSequentialGroup()
                                 .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                .addComponent(lblPlayer1, javax.swing.GroupLayout.PREFERRED_SIZE, 190, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addComponent(lblPlayer1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                             .addGroup(layout.createSequentialGroup()
                                 .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
@@ -223,6 +233,40 @@ public class JControlsPanel extends javax.swing.JPanel implements ActionListener
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
     }// </editor-fold>//GEN-END:initComponents
+
+    private void btnStartActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnStartActionPerformed
+        try {
+                    //BufferedInputStream bis = new BufferedInputStream(getClass().getResourceAsStream("/resources/theEdgeOfDawn.wav"));
+                    BufferedInputStream bis = new BufferedInputStream(getClass().getResourceAsStream("/resources/mercadona.wav"));
+                    AudioInputStream ais = AudioSystem.getAudioInputStream(bis);
+                    // Se obtiene un Clip de sonido
+                    Clip sonido = AudioSystem.getClip();//Obtenemos el clip
+
+                    // Se carga con un fichero wav
+                    sonido.open(ais);//Abrimos
+
+                    //JavaFX 
+                    //String ssound = "sound.mp3";
+       //Media sound = new Media(ssound);
+      // MediaPlayer mediaPlayer = new MediaPlayer(sound);
+      // mediaPlayer.play();/
+
+                    // Comienza la reproducción
+                    //sonido.start();//Iniciamos
+
+                    // Espera mientras se esté reproduciendo.
+                    //
+                    /*        while (sonido.isRunning()) {
+                        Thread.sleep(1000);
+                    }*/
+
+                    // Se cierra el clip.
+                    sonido.close();
+                } catch (Exception e) {
+                    System.out.println("" + e);
+                }
+            
+    }//GEN-LAST:event_btnStartActionPerformed
     
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnStart;

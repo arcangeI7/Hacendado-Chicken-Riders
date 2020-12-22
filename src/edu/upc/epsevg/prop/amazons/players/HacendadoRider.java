@@ -127,9 +127,9 @@ public class HacendadoRider implements IPlayer, IAuto {
 
                     //Moviment Fletxa
                     Point arrowTo = fletxa(backUp);
-
+                    backUp.placeArrow(arrowTo);
                     //Crida Minimitzadora
-                    int value = minProf(backUp, alpha, beta, depth - 1, player);
+                    int value = minProf(backUp, alpha, beta, depth - 1, player.opposite(player));
 
                     //Millor visió del pollastre
                     valor = Math.max(valor, value);
@@ -192,9 +192,9 @@ public class HacendadoRider implements IPlayer, IAuto {
 
                     //Moviment Fletxa
                     Point arrowTo = fletxa(backUp);
-
+                    backUp.placeArrow(arrowTo);
                     //Crida Minimitzadora
-                    int value = maxProf(backUp, alpha, beta, depth - 1, player);
+                    int value = maxProf(backUp, alpha, beta, depth - 1, player.opposite(player));
 
                     //Ceguera màxima del pollastre (Si el valor és molt baix, no el segueixis)
                     valor = Math.min(valor, value);
@@ -258,12 +258,12 @@ public class HacendadoRider implements IPlayer, IAuto {
                     GameStatus backUp = new GameStatus(s);
                     Point actual = new Point(possibleMove.get(j));
                     backUp.moveAmazon(pendingAmazons.get(i), actual);
-
+                    
                     //Moviment Fletxa
                     Point arrowTo = fletxa(backUp);
-
+                    backUp.placeArrow(arrowTo);
                     //Crida Minimitzadora
-                    int value = minIter(backUp, alpha, beta, depth - 1, player);
+                    int value = minIter(backUp, alpha, beta, depth - 1, player.opposite(player));
 
                     //Millor visió del pollastre
                     valor = Math.max(valor, value);
@@ -331,9 +331,9 @@ public class HacendadoRider implements IPlayer, IAuto {
 
                     //Moviment Fletxa
                     Point arrowTo = fletxa(backUp);
-
+                    backUp.placeArrow(arrowTo);
                     //Crida Minimitzadora
-                    int value = maxIter(backUp, alpha, beta, depth - 1, player);
+                    int value = maxIter(backUp, alpha, beta, depth - 1, player.opposite(player));
 
                     //Ceguera màxima del pollastre (Si el valor és molt baix, no el segueixis)
                     valor = Math.min(valor, value);
@@ -396,20 +396,23 @@ public class HacendadoRider implements IPlayer, IAuto {
                     //Moviment Amazona
                     backUp.moveAmazon(pendingAmazons.get(i), actual);
 
-                    //crida al MiniMax
-                    int value = minProf(backUp, alpha, beta, prof - 1, player);
-
+                    
                     //Moviment fletxa
                     arrowTo = fletxa(backUp);
+                    backUp.placeArrow(arrowTo);
+                    //crida al MiniMax
+                    int value = minProf(backUp, alpha, beta, prof - 1, player.opposite(player));
 
                     //Millor Moviment
                     if (value > valor) {
                         valor = value;
-                        millor = new Move(pendingAmazons.get(i), possibleMove.get(j), arrowTo, nodesExp, prof, SearchType.MINIMAX);
+                        QueenFrom = pendingAmazons.get(i);
+                        QueenTo = possibleMove.get(j);
+                        ArrowTo = arrowTo;
                     }
                 }
             }
-            return millor;
+            return new Move(QueenFrom, QueenTo, ArrowTo, nodesExp, prof, SearchType.MINIMAX);
         } else { //mode amb Iterative Deeping
             int profAux = 1;
             while (!haAcabat) {
@@ -428,9 +431,9 @@ public class HacendadoRider implements IPlayer, IAuto {
 
                         //Moviment fletxa
                         arrowTo = fletxa(backUp);
-
+                        backUp.placeArrow(arrowTo);
                         //crida al MiniMax
-                        int value = minIter(backUp, alpha, beta, profAux - 1, player);
+                        int value = minIter(backUp, alpha, beta, profAux - 1, player.opposite(player));
                         if (value > valor) {
                             valor = value;
                             QueenFrom = pendingAmazons.get(i);
